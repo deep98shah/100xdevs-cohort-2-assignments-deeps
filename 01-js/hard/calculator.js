@@ -16,6 +16,102 @@
   Once you've implemented the logic, test your code by running
 */
 
-class Calculator {}
+const { result } = require("lodash");
+
+class Calculator {
+  constructor() {
+    this.result = 0;
+  }
+
+  add(num) {
+    this.result += num;
+  }
+
+  subtract(num) {
+    this.result -= num;
+  }
+
+  multiply(num) {
+    this.result *= num;
+  }
+
+  divide(num) {
+    if (num == 0) {
+      throw Error
+    }
+    this.result /= num;
+  }
+
+  clear(num) {
+    this.result = 0;
+  }
+
+  getResult(num) {
+    return this.result;
+  }
+
+  calculate(expr) {
+    const allowedChars = /[^0-9\+\-\*\/\(\)]/
+    const numberReg = /[0-9]/
+    expr = expr.replace(/ /g, "")
+    console.log(expr)
+    if (allowedChars.test(expr)) {
+      return Error
+    }
+    if (!expr.length) {
+      return 0
+    }
+    let operands = []
+    let operators = []
+    for (let i=0; i<expr.length; i+=1) {
+      let ch = expr.charAt(i)
+      // console.log(numberReg.test(ch), /[\(]/.test(ch), /[\*\+\-\/]/.test(ch), /[\)]/.test(ch))
+      if (numberReg.test(ch)) {
+        let num = 0
+        while (numberReg.test(ch)) {
+          num = num * 10 + parseInt(ch, 10)
+          i += 1
+          ch = expr.charAt(i)
+        }
+        i -= 1
+        operands.push(num)
+      } else if (/[\(]/.test(ch)) {
+        operators.push(ch)
+      } else if (/[\*\+\-\/]/.test(ch)) {
+        operators.push(ch)
+      } else if (/[\)]/.test(ch)) {
+        let oper2 = parseInt(operands.pop(), 10)
+        let oper1 = parseInt(operands.pop(), 10)
+        let prev = operators.pop()
+        let oper = null
+        while (prev != '(') {
+          oper = prev
+          prev = operators.pop()
+        }
+        let res = 0
+        if (oper == '+') {
+          res = oper1 + oper2
+        } else if (oper == '-') {
+          res = oper1 - oper2
+        } else if (oper == '*') {
+          res = oper1 * oper2
+        } else {
+          res = oper1 / oper2
+        }
+        console.log(oper1, oper2, oper, res)
+        operands.push(res)
+      }
+    }
+    if (operands.length > 1) {
+      return Error
+    }
+    return operands[0]
+    // console.log(operands)
+    return operands
+  }
+}
+
+let cal = new Calculator()
+cal.calculate('((1 + 2) + 3')
 
 module.exports = Calculator;
