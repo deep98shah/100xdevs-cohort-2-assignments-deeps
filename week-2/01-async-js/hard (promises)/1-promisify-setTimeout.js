@@ -19,3 +19,5 @@ async function asyncWait(n) {
 }
 
 asyncWait(5)
+
+module.exports = wait;
