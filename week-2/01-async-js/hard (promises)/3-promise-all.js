@@ -6,17 +6,40 @@
 
 
 function waitOneSecond() {
-
+    return new Promise(function(resolve) {
+        setTimeout(() => {
+            resolve('Done from prom 1')
+        }, 1000)
+    })
 }
 
 function waitTwoSecond() {
-
+    return new Promise(function(resolve) {
+        setTimeout(() => {
+            resolve('Done from prom 2')
+        }, 2000)
+    })
 }
 
 function waitThreeSecond() {
+    return new Promise(function(resolve) {
+        setTimeout(() => {
+            resolve('Done from prom 3')
+        }, 3000)
+    })
 
 }
 
 function calculateTime() {
-
+    waitOneSecond().then((data) => {
+        console.log(data)
+    })
+    waitTwoSecond().then((data) => {
+        console.log(data)
+    })
+    waitThreeSecond().then((data) => {
+        console.log(data)
+    })
 }
+
+calculateTime()
