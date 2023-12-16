@@ -41,9 +41,99 @@
  */
   const express = require('express');
   const bodyParser = require('body-parser');
-  
+  const fs = require("fs");
+  const { randomUUID } = require('crypto');
+
   const app = express();
   
-  app.use(bodyParser.json());
+  app.use(bodyParser.json()); 
+
+  const filePath = "C:\\Users\\deep9\\Documents\\0-100\\100xdevs-cohort-2-assignments-deeps\\week-2\\02-nodejs\\todos.json"
+
+  app.get("/todos", (req, res) => {
+    fs.readFile(filePath, (err, data) => {
+      todosObj = JSON.parse(data)
+      res.status(200).send(todosObj)
+    })
+  })
+
+  app.get("/todos/:id", (req, res) => {
+    fs.readFile(filePath, (err, data) => {
+      const todosArray = JSON.parse(data)
+      console.log(todosArray, typeof todosArray)
+      const filteredArray = todosArray.filter((elem) => {
+        return elem.id == req.params.id
+      })
+      if (filteredArray.length != 0) {
+        res.status(200).send(todosArray[0])
+      } else {
+        res.sendStatus(404)
+      }
+    })
+  })
+
+  app.post("/todos", (req, res) => {
+    const todoObject = req.body
+    const id = randomUUID()
+    const todo = Object.assign({}, {id: id}, todoObject)
+    fs.readFile(filePath, (err, data) => {
+      let todosArray = JSON.parse(data)
+      todosArray.push(todo)
+      fs.writeFile(filePath, JSON.stringify(todosArray), { flag: 'w+' }, () => {
+        res.status(201).send({id: id})
+      })
+    })
+  })
+
+  app.put("/todos/:id", (req, res) => {
+    const id = req.params.id
+    console.log(id, typeof id)
+    let updatedTodo = {}
+    let todoIndex = -1
+    fs.readFile(filePath, (err, data) => {
+      const todosArray = JSON.parse(data)
+      const todoBody = req.body
+      todosArray.forEach(todo => {
+        if (todo.id == id) {
+          updatedTodo = Object.assign({}, todo, todoBody)
+          todoIndex = todosArray.indexOf(todo)
+        }
+      });
+      if (todoIndex == -1) {
+        res.sendStatus(404)
+      } else {
+        todosArray[todoIndex] = updatedTodo
+        console.log(todosArray)
+        fs.writeFile(filePath, JSON.stringify(todosArray), (err) => {
+          res.sendStatus(200)
+        })
+      }
+    })
+  })
+
+  app.delete("/todos/:id", (req, res) => {
+    const id = req.params.id
+    let itemIndex = -1
+    fs.readFile(filePath, (err, data) => {
+      const todosArray = JSON.parse(data)
+      todosArray.forEach(todo => {
+        if (todo.id == id) {
+          itemIndex = todosArray.indexOf(todo)
+        }
+      });
+      if (itemIndex == -1) {
+        res.sendStatus(404)
+      } else {
+        todosArray.splice(itemIndex, 1)
+        fs.writeFile(filePath, JSON.stringify(todosArray), (err) => {
+          res.sendStatus(200)
+        })
+      }
+    })
+  })
+
+  // app.listen(3000, () => {
+  //   console.log("Server listening on port 3000")
+  // })
   
   module.exports = app;
