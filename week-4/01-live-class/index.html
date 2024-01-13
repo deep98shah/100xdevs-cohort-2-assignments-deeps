@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basics</title>
+    <script>
+        let timeout;
+        function debouncePopulateAnswer() {
+            clearTimeout(timeout)
+            setTimeout(() => {
+                populateAnswer()
+            }, 100);
+        }
+        function populateAnswer() {
+            const val1 = document.getElementById('input1').value
+            const val2 = document.getElementById('input2').value
+            fetch(`https://sum-server.100xdevs.com/sum?a=${parseInt(val1)}&b=${parseInt(val2)}`).then((response) => {
+                console.log(response)
+                response.text().then((ans) => {
+                    document.getElementById('answer').innerHTML = 'Answer:' + ans
+                })
+            })
+        }
+    </script>
+</head>
+<body>
+    <div>
+        <input id="input1" type="number" placeholder="Value 1" onchange="debouncePopulateAnswer()"></input>
+    </div>
+    <div>
+        <input id="input2" type="number" placeholder="Value 2" onchange="debouncePopulateAnswer()"></input>
+    </div>
+    <div id="answer"></div>
+</body>
+</html>
