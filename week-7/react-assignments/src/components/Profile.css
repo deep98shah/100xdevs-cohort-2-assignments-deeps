@@ -1,0 +1,17 @@
+#stats-container{
+    display: flex;
+}
+
+.individual-stats-container {
+    flex: 1;
+    border: 1px solid black;
+    max-width: fit-content;
+}
+
+#profile-top-container {
+    height: 300px;
+}
+
+#profile-container {
+    border: 1px solid black;
+}

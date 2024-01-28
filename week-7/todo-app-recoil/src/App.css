@@ -1,0 +1,7 @@
+#todo-parent {
+  display: flex;
+}
+
+.todo-child {
+  flex: 1;
+}
